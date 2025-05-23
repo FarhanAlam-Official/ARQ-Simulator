@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://arq-protocol-simulator.example.com/sitemap.xml

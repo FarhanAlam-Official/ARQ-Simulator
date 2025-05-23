@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO Meta Tags -->
+    <title>ARQ Protocol Simulator - Interactive Educational Tool for Networking</title>
+    <meta name="description" content="Learn Stop-and-Wait, Go-Back-N, and Selective Repeat ARQ protocols with this interactive simulator. Visualize how data link layer protocols handle reliable transmission over unreliable channels.">
+    <meta name="keywords" content="ARQ, Stop-and-Wait, Go-Back-N, Selective Repeat, protocol simulator, networking, data link layer, sliding window, error recovery, computer networks, educational tool">
+    <meta name="author" content="ARQ Protocol Simulator Team">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://arq-protocol-simulator.example.com/">
+    <meta property="og:title" content="ARQ Protocol Simulator - Interactive Educational Tool">
+    <meta property="og:description" content="Visualize and learn how Stop-and-Wait, Go-Back-N, and Selective Repeat ARQ protocols work in computer networks.">
+    <meta property="og:image" content="https://arq-protocol-simulator.example.com/images/og-image.jpg">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://arq-protocol-simulator.example.com/">
+    <meta property="twitter:title" content="ARQ Protocol Simulator - Interactive Educational Tool">
+    <meta property="twitter:description" content="Visualize and learn how Stop-and-Wait, Go-Back-N, and Selective Repeat ARQ protocols work in computer networks.">
+    <meta property="twitter:image" content="https://arq-protocol-simulator.example.com/images/twitter-image.jpg">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="./Favicon/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="./Favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="./Favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="./Favicon/favicon-16x16.png">
+    <link rel="manifest" href="./Favicon/site.webmanifest">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- Structured Data for SEO -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "EducationalApplication",
+      "name": "ARQ Protocol Simulator",
+      "description": "An interactive educational tool for learning and visualizing Automatic Repeat reQuest (ARQ) protocols used in data link layer communications.",
+      "applicationCategory": "EducationalApplication",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "author": {
+        "@type": "Organization",
+        "name": "ARQ Protocol Simulator Team"
+      }
+    }
+    </script>
+    
+    <!-- Google Analytics or other analytics code would go here -->
+</head>
+<body>
+    <header>
+        <h1>ARQ Protocol Simulator</h1>
+        <p class="subtitle">A teaching tool for Data Link Layer retransmission strategies</p>
+        <div class="keyboard-shortcuts">
+            <button id="show-shortcuts" class="info-btn" title="Show keyboard shortcuts">⌨️ Keyboard Shortcuts</button>
+            <div id="shortcuts-modal" class="modal">
+                <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <h2>Keyboard Shortcuts</h2>
+                    <ul>
+                        <li><kbd>Space</kbd> - Start/Pause simulation</li>
+                        <li><kbd>R</kbd> - Reset simulation</li>
+                        <li><kbd>S</kbd> - Step through simulation</li>
+                        <li><kbd>1</kbd> - Select Stop-and-Wait ARQ</li>
+                        <li><kbd>2</kbd> - Select Go-Back-N ARQ</li>
+                        <li><kbd>3</kbd> - Select Selective Repeat ARQ</li>
+                        <li><kbd>+</kbd> - Increase simulation speed</li>
+                        <li><kbd>-</kbd> - Decrease simulation speed</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="protocol-selector">
+            <h2>Select Protocol</h2>
+            <div class="protocol-buttons">
+                <button id="stop-and-wait" class="protocol-btn active">Stop-and-Wait ARQ</button>
+                <button id="go-back-n" class="protocol-btn">Go-Back-N ARQ</button>
+                <button id="selective-repeat" class="protocol-btn">Selective Repeat ARQ</button>
+            </div>
+            <div class="protocol-description">
+                <div id="stop-and-wait-desc" class="protocol-desc active">
+                    <h3>Stop-and-Wait ARQ</h3>
+                    <p>The sender sends one frame at a time and waits for an acknowledgment (ACK) before sending the next frame. If the frame or ACK is lost, a timeout occurs, and the frame is retransmitted.</p>
+                    <ul>
+                        <li><strong>Pros:</strong> Simple to implement</li>
+                        <li><strong>Cons:</strong> Low efficiency, especially with high latency</li>
+                    </ul>
+                </div>
+                <div id="go-back-n-desc" class="protocol-desc">
+                    <h3>Go-Back-N ARQ</h3>
+                    <p>The sender can transmit multiple frames specified by a window size without waiting for individual ACKs. If a frame is lost, the sender must retransmit that frame and all subsequent frames in the window.</p>
+                    <ul>
+                        <li><strong>Pros:</strong> Better efficiency than Stop-and-Wait</li>
+                        <li><strong>Cons:</strong> Wastes bandwidth when retransmitting frames that were successfully received</li>
+                    </ul>
+                </div>
+                <div id="selective-repeat-desc" class="protocol-desc">
+                    <h3>Selective Repeat ARQ</h3>
+                    <p>Similar to Go-Back-N, but only lost frames are retransmitted. The receiver can accept and buffer out-of-order frames, allowing for more efficient recovery from errors.</p>
+                    <ul>
+                        <li><strong>Pros:</strong> Most efficient use of bandwidth</li>
+                        <li><strong>Cons:</strong> More complex to implement, requires buffer management</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="simulation-controls">
+            <h2>Simulation Controls</h2>
+            <div class="control-group">
+                <label for="window-size" title="Number of frames that can be sent without waiting for acknowledgment">Window Size:</label>
+                <div class="slider-container">
+                    <input type="range" id="window-size" min="1" max="5" value="3" disabled title="Sliding window size (N frames)">
+                    <span id="window-size-value">3</span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="error-rate" title="Probability of frame or ACK loss during transmission">Error Rate:</label>
+                <div class="slider-container">
+                    <input type="range" id="error-rate" min="0" max="50" value="20" title="Probability of transmission errors">
+                    <span id="error-rate-value">20%</span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="simulation-speed" title="Control the speed of the simulation">Simulation Speed:</label>
+                <div class="slider-container">
+                    <input type="range" id="simulation-speed" min="1" max="5" value="2" title="Adjust simulation playback speed">
+                    <span id="simulation-speed-value">Slow</span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="max-retransmissions" title="Maximum number of retransmission attempts per frame">Max Retransmissions:</label>
+                <div class="slider-container">
+                    <input type="range" id="max-retransmissions" min="1" max="5" value="3" title="Maximum retransmission attempts">
+                    <span id="max-retransmissions-value">3</span>
+                </div>
+            </div>
+            <div class="button-group">
+                <button id="start-btn" class="control-btn primary" title="Start or pause the simulation (Space)">Start</button>
+                <button id="pause-btn" class="control-btn" disabled title="Pause the simulation (Space)">Pause</button>
+                <button id="step-btn" class="control-btn" title="Step through the simulation (S)">Step</button>
+                <button id="reset-btn" class="control-btn" title="Reset the simulation (R)">Reset</button>
+            </div>
+        </div>
+
+        <div class="simulation-container">
+            <h2>Simulation</h2>
+            <div class="current-event" id="current-event">
+                <p>Select a protocol and press Start to begin the simulation.</p>
+            </div>
+            
+            <div class="simulation-area">
+                <div class="sender-container">
+                    <h3>Sender</h3>
+                    <div class="window-indicator" id="sender-window"></div>
+                    <div class="frames-container" id="sender-frames"></div>
+                </div>
+                
+                <div class="network-container">
+                    <h3>Network</h3>
+                    <div class="network" id="network"></div>
+                </div>
+                
+                <div class="receiver-container">
+                    <h3>Receiver</h3>
+                    <div class="window-indicator" id="receiver-window"></div>
+                    <div class="frames-container" id="receiver-frames"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="explanation-container">
+            <h2>What's Happening?</h2>
+            <div class="explanation" id="explanation">
+                <p>This simulator demonstrates how ARQ protocols handle frame transmission and error recovery in the Data Link Layer.</p>
+                <p>Each colored box represents a data frame. The simulation shows how frames are sent from sender to receiver, and how acknowledgments (ACKs) are returned.</p>
+                <p>Errors can occur in both directions, causing frames or ACKs to be lost. Each protocol handles these errors differently.</p>
+            </div>
+        </div>
+
+        <div class="stats-container">
+            <h2>Statistics</h2>
+            <div class="stats-header">
+                <button id="export-stats" class="control-btn" title="Export statistics to CSV">Export Stats</button>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-box" title="Total number of frames transmitted">
+                    <div class="stat-label">Frames Sent</div>
+                    <div class="stat-value" id="frames-sent">0</div>
+                </div>
+                <div class="stat-box" title="Number of frames lost during transmission">
+                    <div class="stat-label">Frames Lost</div>
+                    <div class="stat-value" id="frames-lost">0</div>
+                </div>
+                <div class="stat-box" title="Number of acknowledgments lost">
+                    <div class="stat-label">ACKs Lost</div>
+                    <div class="stat-value" id="acks-lost">0</div>
+                </div>
+                <div class="stat-box" title="Number of frame retransmissions">
+                    <div class="stat-label">Retransmissions</div>
+                    <div class="stat-value" id="retransmissions">0</div>
+                </div>
+                <div class="stat-box" title="Transmission efficiency percentage">
+                    <div class="stat-label">Efficiency</div>
+                    <div class="stat-value" id="efficiency">0%</div>
+                </div>
+                <div class="stat-box" title="Simulation time units elapsed">
+                    <div class="stat-label">Time Units</div>
+                    <div class="stat-value" id="time-units">0</div>
+                </div>
+                <div class="stat-box" title="Frames that reached maximum retransmissions">
+                    <div class="stat-label">Max Retries Hit</div>
+                    <div class="stat-value" id="max-retries">0</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="legend-container">
+        <h3>Legend</h3>
+        <div class="legend">
+            <div class="legend-item"><span class="legend-color ready"></span> Ready</div>
+            <div class="legend-item"><span class="legend-color sent"></span> Sent</div>
+            <div class="legend-item"><span class="legend-color acked"></span> ACKed</div>
+            <div class="legend-item"><span class="legend-color lost"></span> Lost</div>
+            <div class="legend-item"><span class="legend-color timeout"></span> Timeout</div>
+            <div class="legend-item"><span class="legend-color retransmitted"></span> Retransmitted</div>
+            <div class="legend-item"><span class="legend-color buffered"></span> Buffered</div>
+        </div>
+    </div>
+
+    <footer>
+        <p>ARQ Protocol Simulator - Educational Version</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
